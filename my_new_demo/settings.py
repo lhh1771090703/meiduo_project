@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-@6!#9c!-o+j@fz^g)z9ntd(=j7bxler-#6yrho1v8q8i&*8#j4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["www.meiduo.site","localhost"]
+ALLOWED_HOSTS = ["www.meiduo.site","localhost","127.0.0.1"]
 
 
 # Application definition
@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # CORS跨域，解决不同源之间船体数据的问题,还需要设置中间层,中间层要设置在最上面
+    'corsheaders',
     # 可以使用简单方法注册APP
     # 'test01',
     # 也可以使用此方法注册（牢记并掌握）
@@ -48,6 +50,8 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    # 设置CORS中间层,需要在设置在最上层,然后添加白名单
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -153,3 +157,19 @@ CACHES = {
 # session由数据库存储改为redis
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "session"
+
+
+####################################替换系统模型#############################################
+# 由于需要使用系统模型,但系统模型缺少相应字段,采取继承方式添加字段,最后需要配置此性息
+AUTH_USER_MODEL='users.User'
+
+# CORS
+# 设置白名单
+CORS_ORIGIN_WHITELIST = (
+    'http://127.0.0.1:8080',
+    'htpp://localhost:8080',
+    'http://www.meiduo.site:8000',
+    'http://www.meiduo.site:8080'
+
+)
+CORS_ALLOW_CREDENTIALS = True  # 指明在跨域访问中，后端是否支持对cookie的操作。
